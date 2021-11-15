@@ -97,9 +97,30 @@ def write_space_objects_data_to_file(output_filename, space_objects):
     """
     with open(output_filename, 'w') as out_file:
         for obj in space_objects:
-            print(out_file, "%s %f %s %f %f %f %f %f" % (obj.type.title, obj.R, obj.color, obj.m, obj.x, obj.y, obj.Vx, obj.Vy))
+            print("%s %f %s %f %f %f %f %f" % (obj.type.title(), obj.R, obj.color, obj.m, obj.x, obj.y, obj.Vx, obj.Vy), file=out_file)
 
-# FIXME: хорошо бы ещё сделать функцию, сохранающую статистику в заданный файл...
+
+def write_stats_to_file(output_filename, space_objects, time):
+    """Сохраняет данные о космических объектах в файл.
+    Строки должны иметь следующий формат:
+    Star <радиус в пикселах> <цвет> <масса> <x> <y> <Vx> <Vy>
+    Planet <радиус в пикселах> <цвет> <масса> <x> <y> <Vx> <Vy>
+
+    Параметры:
+
+    **output_filename** — имя входного файла
+    **space_objects** — список объектов планет и звёзд
+    """
+    with open(output_filename, 'a') as out_file:
+        for obj in space_objects:
+            if obj.type == "planet":
+                for obj_1 in space_objects:
+                    if obj_1.type == "star":
+                        dist = ((obj.x - obj_1.x) ** 2 + (obj.y - obj_1.y) ** 2) ** 0.5
+                    if obj_1.type == "planet":
+                        continue
+                print("%f %f %f" % (dist, (obj.Vx ** 2 + obj.Vy ** 2) ** 0.5, time), file=out_file)
+
 
 if __name__ == "__main__":
     print("This module is not for direct call!")
